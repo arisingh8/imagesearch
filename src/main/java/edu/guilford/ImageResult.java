@@ -2,7 +2,7 @@ package edu.guilford;
 
 import java.util.HashMap;
 
-import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class ImageResult {
     private String id;
@@ -13,6 +13,9 @@ public class ImageResult {
     private String description;
     private HashMap<String, String> urls;
     private HashMap<String, String> links;
+
+    private transient ImageView smallImage;
+    private transient ImageView regularImage;
 
     public ImageResult() {}
 
@@ -48,11 +51,17 @@ public class ImageResult {
         return links;
     }
 
-    public Image getImage() {
-        return new Image(urls.get("regular"));
+    public ImageView getImage() {
+        if (regularImage == null) {
+            regularImage = new ImageView(urls.get("regular"));
+        }
+        return regularImage;
     }
 
-    public Image getSmallImage() {
-        return new Image(urls.get("small"));
+    public ImageView getSmallImage() {
+        if (smallImage == null) {
+            smallImage = new ImageView(urls.get("regular"));
+        }
+        return smallImage;
     }
 }
