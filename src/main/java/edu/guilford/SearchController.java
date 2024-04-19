@@ -24,6 +24,9 @@ public class SearchController {
 
     ImageResults currentResults;
 
+    private EditController editController;
+    private Runnable sceneSwapper;
+
     @FXML
     private ChoiceBox<Integer> numItemsChoiceBox;
 
@@ -41,6 +44,14 @@ public class SearchController {
         resultsPane.widthProperty().addListener((obs, oldVal, newVal) -> {
             drawImagesFromResults();
         });
+    }
+
+    public void setEditController(EditController editController) {
+        this.editController = editController;
+    }
+
+    public void setSceneSwapper(Runnable sceneSwapper) {
+        this.sceneSwapper = sceneSwapper;
     }
 
     @FXML
@@ -100,6 +111,8 @@ public class SearchController {
                     final int idx = i + j;
                     imageView.setOnMouseClicked(e -> {
                         System.out.println("Clicked on " + images[idx].getLikes());
+                        editController.setCurrentImage(images[idx]);
+                        sceneSwapper.run();
                     });
                     resultsPane.getChildren().add(imageView);
                 }
