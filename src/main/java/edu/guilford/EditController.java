@@ -129,25 +129,20 @@ public class EditController {
      */
     @FXML
     private void widthChanged() {
+        if (widthTextField.getText().isEmpty() || heightTextField.getText().isEmpty() || 
+            !widthTextField.getText().matches("[0-9]+") || !heightTextField.getText().matches("[0-9]+") ||
+            Integer.parseInt(widthTextField.getText()) <= 0 || Integer.parseInt(heightTextField.getText()) <= 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid width or height");
+            alert.setHeaderText("Width and height must be positive numbers!");
+            alert.showAndWait();
+            return;
+        }
+        double width = Double.parseDouble(widthTextField.getText());
+        double height = Double.parseDouble(heightTextField.getText());
         if (aspectRatioCheckBox.isSelected()) {
-            if (widthTextField.getText().isEmpty() || heightTextField.getText().isEmpty()) {
-                return;
-            }
-            double width = Double.parseDouble(widthTextField.getText());
-            double height = Double.parseDouble(heightTextField.getText());
-            if (width <= 0 || height <= 0) {
-                return;
-            }
             currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, (int) width, (int) height);
         } else {
-            if (widthTextField.getText().isEmpty() || heightTextField.getText().isEmpty()) {
-                return;
-            }
-            double width = Double.parseDouble(widthTextField.getText());
-            double height = Double.parseDouble(heightTextField.getText());
-            if (width <= 0 || height <= 0) {
-                return;
-            }
             currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, (int) width, (int) height);
         }
 
@@ -159,25 +154,20 @@ public class EditController {
      */
     @FXML
     private void heightChanged() {
+        if (widthTextField.getText().isEmpty() || heightTextField.getText().isEmpty() || 
+            !widthTextField.getText().matches("[0-9]+") || !heightTextField.getText().matches("[0-9]+") ||
+            Integer.parseInt(widthTextField.getText()) <= 0 || Integer.parseInt(heightTextField.getText()) <= 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid width or height");
+            alert.setHeaderText("Width and height must be positive numbers!");
+            alert.showAndWait();
+            return;
+        }
+        double width = Double.parseDouble(widthTextField.getText());
+        double height = Double.parseDouble(heightTextField.getText());
         if (aspectRatioCheckBox.isSelected()) {
-            if (widthTextField.getText().isEmpty() || heightTextField.getText().isEmpty()) {
-                return;
-            }
-            double width = Double.parseDouble(widthTextField.getText());
-            double height = Double.parseDouble(heightTextField.getText());
-            if (width <= 0 || height <= 0) {
-                return;
-            }
             currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_HEIGHT, (int) width, (int) height);
         } else {
-            if (widthTextField.getText().isEmpty() || heightTextField.getText().isEmpty()) {
-                return;
-            }
-            double width = Double.parseDouble(widthTextField.getText());
-            double height = Double.parseDouble(heightTextField.getText());
-            if (width <= 0 || height <= 0) {
-                return;
-            }
             currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, (int) width, (int) height);
         }
 
@@ -223,6 +213,10 @@ public class EditController {
                 alert.showAndWait();
             } catch (IOException ex) {
                 Logger.getLogger(EditController.class.getName()).log(Level.SEVERE, null, ex);
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error!");
+                alert.setHeaderText("Error saving image to " + selectedLocation.getAbsolutePath());
+                alert.showAndWait();
             }
         }
     }

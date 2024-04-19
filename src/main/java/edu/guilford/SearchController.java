@@ -96,11 +96,15 @@ public class SearchController {
             System.out.println("got response with " + numReceived + " results");
             System.out.println("could've gotten " + results.getTotal() + " results");
             currentResults = results;
+
+            drawImagesFromResults();
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error!");
+            alert.setHeaderText("An error occurred while trying to search for " + searchTextField.getText());
+            alert.showAndWait();
         }
-
-        drawImagesFromResults();
     }
 
     /**
