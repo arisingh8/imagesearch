@@ -250,7 +250,8 @@ public class EditController {
                              "Original width: " + currentImage.getWidth() + "\n" +
                              "Original height: " + currentImage.getHeight() + "\n" +
                              "Description: " + currentImage.getDescription() + "\n" +
-                             "Created at: " + currentImage.getCreated_at());
+                             "Created at: " + currentImage.getCreated_at() + "\n" +
+                             "URL: " + currentImage.getLinks().get("html"));
         alert.showAndWait();
     }
 }
