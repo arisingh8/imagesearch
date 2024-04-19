@@ -56,7 +56,6 @@ public class SearchController {
         try {
             HttpResponse<String> response = HttpClient.newHttpClient()
                     .send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
             ImageResults results = gson.fromJson(response.body(), ImageResults.class);
             int numReceived = results.getResults().length;
             System.out.println("got response with " + numReceived + " results");
