@@ -39,8 +39,8 @@
          </padding>
          <children>
             <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonPressed" text="Back" />
-            <Button fx:id="saveButton" mnemonicParsing="false" text="Save" />
-            <Button fx:id="copyButton" mnemonicParsing="false" text="Copy" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonPressed" text="Save" />
+            <Button fx:id="copyButton" mnemonicParsing="false" onAction="#copyButtonPressed" text="Copy" />
          </children>
       </HBox>
    </children>

@@ -1,16 +1,21 @@
 package edu.guilford;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 
 import java.util.logging.Logger;
 
@@ -18,11 +23,13 @@ import org.imgscalr.Scalr;
 
 import java.util.logging.Level;
 import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 public class EditController {
     private ImageResult currentImage;
     private BufferedImage currentEditedImage;
     private Runnable sceneSwapper;
+    private FileChooser fileChooser = new FileChooser();
 
     @FXML
     private TextField widthTextField;
@@ -42,6 +49,10 @@ public class EditController {
         heightTextField.setText(Double.toString(imagePane.getPrefHeight()));
         System.out.println("width: " + widthTextField.getText());
         System.out.println("height: " + heightTextField.getText());
+
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("Image files", "*.png")
+        );
     }
 
     public void setCurrentImage(ImageResult currentImage) {
@@ -141,5 +152,36 @@ public class EditController {
     @FXML
     private void backButtonPressed() {
         sceneSwapper.run();
+    }
+
+    @FXML
+    private void saveButtonPressed() {
+        File selectedLocation = fileChooser.showSaveDialog(null);
+        if (selectedLocation != null) {
+            try {
+                ImageIO.write(currentEditedImage, "png", selectedLocation);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Saved!");
+                alert.setHeaderText("Image saved to " + selectedLocation.getAbsolutePath());
+                alert.showAndWait();
+            } catch (IOException ex) {
+                Logger.getLogger(EditController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    @FXML
+    private void copyButtonPressed() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+
+        content.putImage(SwingFXUtils.toFXImage(currentEditedImage, null));
+        clipboard.setContent(content);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Copied!");
+        alert.setHeaderText("Image copied to clipboard");
+        alert.showAndWait();
     }
 }
