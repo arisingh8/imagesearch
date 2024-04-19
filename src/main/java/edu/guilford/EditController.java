@@ -23,6 +23,12 @@ import java.util.logging.Level;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+/**
+ * Controller for the edit scene (the image editing and exporting page)
+ * 
+ * @author Ari Singh
+ * @see SearchController
+ */
 public class EditController {
     static int INITIAL_WIDTH = 600;
     static int INITIAL_HEIGHT = 400;
@@ -44,6 +50,10 @@ public class EditController {
     @FXML
     private Pane imagePane;
 
+    /**
+     * Initializes the edit scene by setting the initial width and height of the image
+     * and adding a filter for image files to the file chooser
+     */
     @FXML
     private void initialize() {
         widthTextField.setText(Double.toString(INITIAL_WIDTH));
@@ -56,14 +66,29 @@ public class EditController {
         );
     }
 
+    /**
+     * Gets the current image as a BufferedImage
+     * 
+     * @return the current image as a BufferedImage
+     */
     private BufferedImage getBufferedImage() {
         return SwingFXUtils.fromFXImage(currentImage.getImage().getImage(), null);
     }
 
+    /**
+     * Gets the current image as an Image (JavaFX version)
+     * 
+     * @return the current image as an Image
+     */
     private Image getFXImage() {
         return SwingFXUtils.toFXImage(currentEditedImage, null);
     }
 
+    /**
+     * Sets the current image to the given image
+     * 
+     * @param currentImage the image to set as the current image
+     */
     public void setCurrentImage(ImageResult currentImage) {
         this.currentImage = currentImage;
 
@@ -73,10 +98,18 @@ public class EditController {
         drawImage();
     }
 
+    /**
+     * Sets the scene swapper for this edit controller
+     * 
+     * @param sceneSwapper the scene swapper to set
+     */
     public void setSceneSwapper(Runnable sceneSwapper) {
         this.sceneSwapper = sceneSwapper;
     }
 
+    /**
+     * Resets the image to its original size and shape
+     */
     @FXML
     private void reset() {
         this.currentEditedImage = getBufferedImage();
@@ -91,6 +124,9 @@ public class EditController {
         drawImage();
     }
 
+    /**
+     * Changes the width of the image to the value in the width text field
+     */
     @FXML
     private void widthChanged() {
         if (aspectRatioCheckBox.isSelected()) {
@@ -118,6 +154,9 @@ public class EditController {
         drawImage();
     }
 
+    /**
+     * Changes the height of the image to the value in the height text field
+     */
     @FXML
     private void heightChanged() {
         if (aspectRatioCheckBox.isSelected()) {
@@ -145,6 +184,9 @@ public class EditController {
         drawImage();
     }
 
+    /**
+     * Draws the current image on the window
+     */
     @FXML
     private void drawImage() {
         imagePane.getChildren().clear();
@@ -157,11 +199,17 @@ public class EditController {
         heightTextField.setText(Integer.toString(currentEditedImage.getHeight()));
     }
 
+    /**
+     * Listens for the back button to be pressed and switches the scene back to the search scene
+     */
     @FXML
     private void backButtonPressed() {
         sceneSwapper.run();
     }
 
+    /**
+     * Listens for the save button to be pressed and saves the current image to a file
+     */
     @FXML
     private void saveButtonPressed() {
         File selectedLocation = fileChooser.showSaveDialog(null);
@@ -179,6 +227,9 @@ public class EditController {
         }
     }
 
+    /**
+     * Listens for the copy button to be pressed and copies the current image to the clipboard
+     */
     @FXML
     private void copyButtonPressed() {
         Clipboard clipboard = Clipboard.getSystemClipboard();
@@ -193,6 +244,9 @@ public class EditController {
         alert.showAndWait();
     }
 
+    /**
+     * Listens for the show metadata button to be pressed and shows the metadata of the current image in a dialog
+     */
     @FXML
     private void showMetadataButtonPressed() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

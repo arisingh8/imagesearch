@@ -5,8 +5,10 @@
 package edu.guilford;
 
 /**
- *
- * @author ari
+ * Represents the results of an Unsplash image search
+ * This type is deserialized (by GSON) from each response from the Unsplash API
+ * 
+ * @author Ari Singh
  */
 public class ImageResults {
     private int total;

@@ -17,6 +17,12 @@ import java.net.http.HttpResponse;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+/**
+ * Controller for the search scene (the results page + search bar)
+ * 
+ * @author Ari Singh
+ * @see EditController
+ */
 public class SearchController {
     private static String api_key = "OzoyRCa_d79pAF6YX1PNdAzh0RNCKMTCHtLuMcXtW94";
     static int NUM_PICS_IN_ROW = 4;
@@ -36,6 +42,10 @@ public class SearchController {
     @FXML
     private TextField searchTextField;
 
+    /**
+     * Initializes the search scene by setting up the number of items choice box and the results pane change listener
+     * to redraw the images when the pane width changes
+     */
     @FXML
     private void initialize() {
         numItemsChoiceBox.getItems().addAll(10, 15, 20, 25);
@@ -46,14 +56,28 @@ public class SearchController {
         });
     }
 
+    /**
+     * Sets the edit controller for this search controller
+     * 
+     * @param editController the edit controller to set
+     */
     public void setEditController(EditController editController) {
         this.editController = editController;
     }
 
+    /**
+     * Sets the scene swapper for this search controller
+     * 
+     * @param sceneSwapper the scene swapper to set
+     */
     public void setSceneSwapper(Runnable sceneSwapper) {
         this.sceneSwapper = sceneSwapper;
     }
 
+    /**
+     * Runs a search for the text in the search text field and redraws the images in the results pane.
+     * This method is called when the search button is clicked. It uses GSON to process the search results from the Unsplash API.
+     */
     @FXML
     private void runSearch() {
         System.out.println(searchTextField.getText());
@@ -79,6 +103,12 @@ public class SearchController {
         drawImagesFromResults();
     }
 
+    /**
+     * Draws the images from the current results in the results pane.
+     * This method is called after a search is run and the results are received.
+     * It calculates the aspect ratio for each image in each row, and calculates the height of each row by dividing its width by the sum of the aspect ratios.
+     * It then sets the height of each image in the row to the row height and adds the image to the results pane.
+     */
     private void drawImagesFromResults() {
         if (currentResults == null) {
             return;

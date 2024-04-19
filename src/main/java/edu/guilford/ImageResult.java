@@ -4,6 +4,12 @@ import java.util.HashMap;
 
 import javafx.scene.image.ImageView;
 
+/**
+ * Represents a single image result from an Unsplash image search
+ * This type is deserialized from each result (by GSON) in the "results" array of the response from the Unsplash API
+ * 
+ * @author Ari Singh
+ */
 public class ImageResult {
     private String id;
     private String created_at;
@@ -51,6 +57,12 @@ public class ImageResult {
         return links;
     }
 
+    /**
+     * Returns the regular image view for this image result
+     * If the regular image view has not been created yet, it is created
+     * 
+     * @return the regular image view for this image result
+     */
     public ImageView getImage() {
         if (regularImage == null) {
             regularImage = new ImageView(urls.get("regular"));
@@ -58,6 +70,12 @@ public class ImageResult {
         return regularImage;
     }
 
+    /**
+     * Returns the small image view for this image result
+     * If the small image view has not been created yet, it is created
+     * 
+     * @return the small image view for this image result
+     */
     public ImageView getSmallImage() {
         if (smallImage == null) {
             smallImage = new ImageView(urls.get("regular"));
