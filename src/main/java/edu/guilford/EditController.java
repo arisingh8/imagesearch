@@ -2,15 +2,13 @@ package edu.guilford;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -26,6 +24,9 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 public class EditController {
+    static int INITIAL_WIDTH = 600;
+    static int INITIAL_HEIGHT = 400;
+
     private ImageResult currentImage;
     private BufferedImage currentEditedImage;
     private Runnable sceneSwapper;
@@ -45,8 +46,8 @@ public class EditController {
 
     @FXML
     private void initialize() {
-        widthTextField.setText(Double.toString(imagePane.getPrefWidth()));
-        heightTextField.setText(Double.toString(imagePane.getPrefHeight()));
+        widthTextField.setText(Double.toString(INITIAL_WIDTH));
+        heightTextField.setText(Double.toString(INITIAL_HEIGHT));
         System.out.println("width: " + widthTextField.getText());
         System.out.println("height: " + heightTextField.getText());
 
@@ -55,13 +56,20 @@ public class EditController {
         );
     }
 
+    private BufferedImage getBufferedImage() {
+        return SwingFXUtils.fromFXImage(currentImage.getImage().getImage(), null);
+    }
+
+    private Image getFXImage() {
+        return SwingFXUtils.toFXImage(currentEditedImage, null);
+    }
+
     public void setCurrentImage(ImageResult currentImage) {
         this.currentImage = currentImage;
-        this.currentEditedImage = SwingFXUtils.fromFXImage(currentImage.getImage().getImage(), null);
 
         double width = Double.parseDouble(widthTextField.getText());
         double height = Double.parseDouble(heightTextField.getText());
-        currentEditedImage = Scalr.resize(currentEditedImage, Scalr.Method.SPEED, Scalr.Mode.AUTOMATIC, (int) width, (int) height);
+        currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, (int) width, (int) height);
         drawImage();
     }
 
@@ -71,15 +79,15 @@ public class EditController {
 
     @FXML
     private void reset() {
-        this.currentEditedImage = SwingFXUtils.fromFXImage(currentImage.getImage().getImage(), null);
+        this.currentEditedImage = getBufferedImage();
 
-        double width = imagePane.getPrefWidth();
-        double height = imagePane.getPrefHeight();
+        double width = INITIAL_WIDTH;
+        double height = INITIAL_HEIGHT;
         widthTextField.setText(Double.toString(width));
         heightTextField.setText(Double.toString(height));
         aspectRatioCheckBox.setSelected(true);
 
-        currentEditedImage = Scalr.resize(currentEditedImage, Scalr.Method.SPEED, Scalr.Mode.AUTOMATIC, (int) width, (int) height);
+        currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, (int) width, (int) height);
         drawImage();
     }
 
@@ -94,7 +102,7 @@ public class EditController {
             if (width <= 0 || height <= 0) {
                 return;
             }
-            currentEditedImage = Scalr.resize(currentEditedImage, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, (int) width, (int) height);
+            currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, (int) width, (int) height);
         } else {
             if (widthTextField.getText().isEmpty() || heightTextField.getText().isEmpty()) {
                 return;
@@ -104,7 +112,7 @@ public class EditController {
             if (width <= 0 || height <= 0) {
                 return;
             }
-            currentEditedImage = Scalr.resize(currentEditedImage, Scalr.Method.SPEED, Scalr.Mode.FIT_EXACT, (int) width, (int) height);
+            currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, (int) width, (int) height);
         }
 
         drawImage();
@@ -121,7 +129,7 @@ public class EditController {
             if (width <= 0 || height <= 0) {
                 return;
             }
-            currentEditedImage = Scalr.resize(currentEditedImage, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, (int) width, (int) height);
+            currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_HEIGHT, (int) width, (int) height);
         } else {
             if (widthTextField.getText().isEmpty() || heightTextField.getText().isEmpty()) {
                 return;
@@ -131,7 +139,7 @@ public class EditController {
             if (width <= 0 || height <= 0) {
                 return;
             }
-            currentEditedImage = Scalr.resize(currentEditedImage, Scalr.Method.SPEED, Scalr.Mode.FIT_EXACT, (int) width, (int) height);
+            currentEditedImage = Scalr.resize(getBufferedImage(), Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, (int) width, (int) height);
         }
 
         drawImage();
@@ -141,7 +149,7 @@ public class EditController {
     private void drawImage() {
         imagePane.getChildren().clear();
 
-        ImageView imageView = new ImageView(SwingFXUtils.toFXImage(currentEditedImage, null));
+        ImageView imageView = new ImageView(getFXImage());
 
         imagePane.getChildren().add(imageView);
 
@@ -176,12 +184,25 @@ public class EditController {
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent content = new ClipboardContent();
 
-        content.putImage(SwingFXUtils.toFXImage(currentEditedImage, null));
+        content.putImage(getFXImage());
         clipboard.setContent(content);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Copied!");
         alert.setHeaderText("Image copied to clipboard");
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void showMetadataButtonPressed() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Metadata");
+        alert.setHeaderText("Image metadata from Unsplash shown below");
+        alert.setContentText("Likes: " + currentImage.getLikes() + "\n" +
+                             "Original width: " + currentImage.getWidth() + "\n" +
+                             "Original height: " + currentImage.getHeight() + "\n" +
+                             "Description: " + currentImage.getDescription() + "\n" +
+                             "Created at: " + currentImage.getCreated_at());
         alert.showAndWait();
     }
 }

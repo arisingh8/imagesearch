@@ -39,6 +39,7 @@
          </padding>
          <children>
             <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonPressed" text="Back" />
+            <Button mnemonicParsing="false" onAction="#showMetadataButtonPressed" text="Show metadata" />
             <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonPressed" text="Save" />
             <Button fx:id="copyButton" mnemonicParsing="false" onAction="#copyButtonPressed" text="Copy" />
          </children>
