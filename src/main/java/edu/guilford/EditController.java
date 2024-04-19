@@ -20,8 +20,9 @@ import java.util.logging.Level;
 import java.awt.image.BufferedImage;
 
 public class EditController {
-    ImageResult currentImage;
-    BufferedImage currentEditedImage;
+    private ImageResult currentImage;
+    private BufferedImage currentEditedImage;
+    private Runnable sceneSwapper;
 
     @FXML
     private TextField widthTextField;
@@ -47,19 +48,27 @@ public class EditController {
         this.currentImage = currentImage;
         this.currentEditedImage = SwingFXUtils.fromFXImage(currentImage.getImage().getImage(), null);
 
-        widthChanged();
+        double width = Double.parseDouble(widthTextField.getText());
+        double height = Double.parseDouble(heightTextField.getText());
+        currentEditedImage = Scalr.resize(currentEditedImage, Scalr.Method.SPEED, Scalr.Mode.AUTOMATIC, (int) width, (int) height);
         drawImage();
+    }
+
+    public void setSceneSwapper(Runnable sceneSwapper) {
+        this.sceneSwapper = sceneSwapper;
     }
 
     @FXML
     private void reset() {
         this.currentEditedImage = SwingFXUtils.fromFXImage(currentImage.getImage().getImage(), null);
 
-        widthTextField.setText(Double.toString(imagePane.getPrefWidth()));
-        heightTextField.setText(Double.toString(imagePane.getPrefHeight()));
+        double width = imagePane.getPrefWidth();
+        double height = imagePane.getPrefHeight();
+        widthTextField.setText(Double.toString(width));
+        heightTextField.setText(Double.toString(height));
         aspectRatioCheckBox.setSelected(true);
 
-        widthChanged();
+        currentEditedImage = Scalr.resize(currentEditedImage, Scalr.Method.SPEED, Scalr.Mode.AUTOMATIC, (int) width, (int) height);
         drawImage();
     }
 
@@ -127,5 +136,10 @@ public class EditController {
 
         widthTextField.setText(Integer.toString(currentEditedImage.getWidth()));
         heightTextField.setText(Integer.toString(currentEditedImage.getHeight()));
+    }
+
+    @FXML
+    private void backButtonPressed() {
+        sceneSwapper.run();
     }
 }

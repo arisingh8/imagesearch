@@ -25,10 +25,17 @@ public class ImageSearch extends Application {
         FXMLLoader editFxmlLoader = new FXMLLoader(getClass().getResource("edit.fxml"));
         editScene = new Scene(editFxmlLoader.load(), 800, 600);
         EditController editController = editFxmlLoader.getController();
+
         searchController.setEditController(editController);
         searchController.setSceneSwapper(
             () -> {
                 stage.setScene(editScene);
+            }
+        );
+
+        editController.setSceneSwapper(
+            () -> {
+                stage.setScene(searchScene);
             }
         );
 
